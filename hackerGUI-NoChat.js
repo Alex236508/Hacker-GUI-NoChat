@@ -46,7 +46,7 @@
     if(progress>=100){
       clearInterval(int);
       setTimeout(()=>{
-        loading.innerText='Welcome Hacker';
+        loading.innerText='Welcome, hacker';
         setTimeout(()=>{
           clearInterval(rain);
           overlay.remove();
@@ -110,9 +110,9 @@
 
      // -------------------- DRAGGING --------------------
 function makeDraggable(g, lock){
-  g.style.position = 'fixed'; 
+  g.style.position = 'fixed'; // ensures anchored to viewport
   g.onmousedown = function(e){
-    if(lock.locked) return; 
+    if(lock.locked) return; // do nothing if locked
     let ox = e.clientX - g.getBoundingClientRect().left,
         oy = e.clientY - g.getBoundingClientRect().top;
     function move(e){
@@ -134,13 +134,14 @@ function makeDraggable(g, lock){
   };
 }
 
-
+// Attach to your GUIs after creating them and adding locks
 makeDraggable(util, utilLock);
 makeDraggable(vfx, vfxLock);
 
+    // -------------------- UTILITIES BUTTONS --------------------    
     // ---------- UTILITIES BUTTONS ----------
 (function(){
-    const activeUtilities = {};
+    const activeUtilities = {}; // Track ongoing effects
 
     // Helper to add a button
     function addBtn(container, name, on, off) {
@@ -152,7 +153,6 @@ makeDraggable(vfx, vfxLock);
         if(off) activeUtilities[name] = { on, off };
     }
 
-    // Developer Console (Eruda)
     addBtn(util, 'Developer Console', () => {
     if (!window.erudaLoaded) {
         let s = document.createElement('script');
@@ -161,10 +161,10 @@ makeDraggable(vfx, vfxLock);
         s.onload = () => {
             eruda.init();
             eruda.theme = 'Dark';
-            window.erudaInstance = eruda; 
+            window.erudaInstance = eruda; // keep reference
             window.erudaLoaded = true;
         };
-        window.erudaScript = s; 
+        window.erudaScript = s; // keep script reference for removal
     } else {
         window.erudaInstance.show();
     }
@@ -196,6 +196,24 @@ makeDraggable(vfx, vfxLock);
             try{ alert(eval(_o)); } catch(e){ alert(e); }
         }
     });
+
+    addBtn(util, 'Web X-Ray', () => {
+    if (!window.webXRayLoaded) {
+        let s = document.createElement('script');
+        s.src = 'https://x-ray-goggles.mouse.org/webxray.js';
+        s.onload = () => {
+            window.webXRayLoaded = true;
+        };
+        document.body.appendChild(s);
+        window.webXRayScript = s;
+    }
+}, () => {
+    if (window.webXRayScript) {
+        window.webXRayScript.remove();
+        window.webXRayScript = null;
+        window.webXRayLoaded = false;
+    }
+});
 
     // DNS Lookup
     addBtn(util,'DNS Lookup',()=>{ 
@@ -306,8 +324,7 @@ makeDraggable(vfx, vfxLock);
     })();
 
         // -------------------- VFX BUTTONS --------------------
-  // 3D Page
-  addBtn(vfx,'3D Page',()=>{
+addBtn(vfx,'3D Page',()=>{
   if(!window.triScript){
     let s=document.createElement('script');
     s.src='https://rawgit.com/Krazete/bookmarklets/master/tri.js';
@@ -317,7 +334,7 @@ makeDraggable(vfx, vfxLock);
 },()=>{
   if(window.triScript){window.triScript.remove();window.triScript=null;}
 });
-// Explode Page
+
 addBtn(vfx,'Explode Page',()=>{
   if(window.explodeActive) return;
   window.explodeActive=true;
@@ -357,7 +374,7 @@ addBtn(vfx,'Explode Page',()=>{
     e.style.transition='';
   });
 });
-// Image Glitch
+
 addBtn(vfx,'Image Glitch',()=>{
   if(window.imgGlitchInt) return;
   window.imgGlitchInt=setInterval(()=>{
@@ -378,7 +395,7 @@ addBtn(vfx,'Image Glitch',()=>{
     });
   }
 });
-// Random Link Redirects
+
 addBtn(vfx,'Random Link Redirects',()=>{
   window.linkRedirectsInt=setInterval(()=>{
     document.querySelectorAll('a:not(#vfxGUI *):not(#utilitiesGUI *)').forEach(a=>{
@@ -388,7 +405,7 @@ addBtn(vfx,'Random Link Redirects',()=>{
 },()=>{
   clearInterval(window.linkRedirectsInt);
 });
-// Matrix Rain
+
 addBtn(vfx,'Matrix Rain',()=>{
   if(window.matrixActive) return;
   window.matrixActive=true;
@@ -423,44 +440,41 @@ addBtn(vfx,'Matrix Rain',()=>{
   window.matrixActive=false;
 });
 
-// Glitch
 addBtn(vfx,'Glitch',()=>{
-    if(window.glitchActive) return;
-    window.glitchActive=true;
-    window.glitchInt=setInterval(()=>{
-        document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
-            e.style.backgroundColor=['red','orange','yellow','green','blue','purple','pink'][Math.floor(Math.random()*7)];
-        });
-    },25);
+  if(window.glitchActive) return;
+  window.glitchActive=true;
+  window.glitchInt=setInterval(()=>{
+    document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
+      e.style.backgroundColor=['red','orange','yellow','green','blue','purple','pink'][Math.floor(Math.random()*7)];
+    });
+  },25);
 },()=>{
-    if(window.glitchInt){
-        clearInterval(window.glitchInt);
-        window.glitchInt=null;
-    }
-    window.glitchActive=false; // reset the flag
+  if(window.glitchInt){
+    clearInterval(window.glitchInt);
+    window.glitchInt=null;
+    window.glitchActive=false;
     document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>e.style.backgroundColor='');
+  }
 });
 
-
-// Smooth Disco
 addBtn(vfx,'Smooth Disco',()=>{
-    if(window.discoSmoothActive) return;
-    window.discoSmoothActive=true;
-    let colors="red orange yellow green blue purple pink".split(" "),i=0;
-    window.discoSmoothInt=setInterval(()=>{
-        i>=colors.length?i=0:i++;
-        document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
-            e.style.transition="background-color 1s";
-            e.style.backgroundColor=colors[i];
-        });
-    },1000);
+  if(window.discoSmoothActive) return;
+  window.discoSmoothActive=true;
+  let colors="red orange yellow green blue purple pink".split(" "),i=0;
+  window.discoSmoothInt=setInterval(()=>{
+    i>=colors.length?i=0:i++;
+    document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
+      e.style.transition="background-color 1s";
+      e.style.backgroundColor=colors[i];
+    });
+  },1000);
 },()=>{
-    if(window.discoSmoothInt){
-        clearInterval(window.discoSmoothInt);
-        window.discoSmoothInt=null;
-    }
-    window.discoSmoothActive=false; // reset the flag
+  if(window.discoSmoothInt){
+    clearInterval(window.discoSmoothInt);
+    window.discoSmoothInt=null;
+    window.discoSmoothActive=false;
     document.querySelectorAll('*:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>e.style.backgroundColor='');
+  }
 });
 
 // Text Corruption
@@ -485,57 +499,29 @@ addBtn(vfx,'Text Corruption',()=>{
 },()=>{
   if(window.textCorruptStyle){window.textCorruptStyle.remove(); window.textCorruptStyle=null;}
 });
+
 // Bubble Text
-addBtn(vfx, 'Bubble Text', () => {
-    if (window.bubbleActive) return;
+addBtn(vfx,'Bubble Text',()=>{
+    if(window.bubbleActive) return;
     window.bubbleActive = true;
+    window.originalText = [];
 
-    const originalTextMap = new Map();
-
-    const bubbleMap = {
-        a: 'ⓐ', b: 'ⓑ', c: 'ⓒ', d: 'ⓓ', e: 'ⓔ', f: 'ⓕ', g: 'ⓖ', h: 'ⓗ', i: 'ⓘ', j: 'ⓙ', k: 'ⓚ', l: 'ⓛ',
-        m: 'ⓜ', n: 'ⓝ', o: 'ⓞ', p: 'ⓟ', q: 'ⓠ', r: 'ⓡ', s: 'ⓢ', t: 'ⓣ', u: 'ⓤ', v: 'ⓥ', w: 'ⓦ', x: 'ⓧ',
-        y: 'ⓨ', z: 'ⓩ', A: 'Ⓐ', B: 'Ⓑ', C: 'Ⓒ', D: 'Ⓓ', E: 'Ⓔ', F: 'Ⓕ', G: 'Ⓖ', H: 'Ⓗ', I: 'Ⓘ', J: 'Ⓙ',
-        K: 'Ⓚ', L: 'Ⓛ', M: 'Ⓜ', N: 'Ⓝ', O: 'Ⓞ', P: 'Ⓟ', Q: 'Ⓠ', R: 'Ⓡ', S: 'Ⓢ', T: 'Ⓣ', U: 'Ⓤ', V: 'Ⓥ',
-        W: 'Ⓦ', X: 'Ⓧ', Y: 'Ⓨ', Z: 'Ⓩ', '0': '⓪', '1': '①', '2': '②', '3': '③', '4': '④', '5': '⑤', '6': '⑥',
-        '7': '⑦', '8': '⑧', '9': '⑨'
-    };
-
-    function transform(node) {
-        if (!node) return;
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            try { if (node.id === 'vfxGUI' || node.id === 'utilitiesGUI' || (node.closest && node.closest('#vfxGUI,#utilitiesGUI'))) return; } catch (e) { return; }
-            node.childNodes.forEach(transform);
-            return;
-        }
-        if (node.nodeType === Node.TEXT_NODE) {
-            const txt = node.nodeValue;
-            if (!txt || !txt.trim()) return;
-            const parent = node.parentElement;
-            if (parent && parent.closest && parent.closest('#vfxGUI,#utilitiesGUI')) return;
-            if (!originalTextMap.has(node)) originalTextMap.set(node, txt);
-            node.nodeValue = txt.replace(/[a-zA-Z0-9]/g, ch => bubbleMap[ch] || ch);
+    function transform(el){
+        if(!el || el.id==='vfxGUI'||el.id==='utilitiesGUI'||el.closest('#vfxGUI,#utilitiesGUI')) return;
+        if(el.nodeType===Node.TEXT_NODE && el.nodeValue.trim()){
+            window.originalText.push({el, text: el.nodeValue});
+            let chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+            let bubbles='ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ①②③④⑤⑥⑦⑧⑨⓪'.split('');
+            el.nodeValue = el.nodeValue.replace(/[a-zA-Z0-9]/g, l => bubbles[chars.indexOf(l)] || l);
+        } else if(el.childNodes && el.childNodes.length>0){
+            el.childNodes.forEach(transform);
         }
     }
 
-    transform(document.body);
-
-    // Cleanup function keeps reference to originalTextMap
-    const cleanup = () => {
-        originalTextMap.forEach((orig, node) => { try { node.nodeValue = orig; } catch (e) { } });
-        window.bubbleActive = false;
-    };
-
-    window._bubbleCleanup = cleanup;
-
-    if (!window.stopAllVFX) window.stopAllVFX = [];
-    // Remove old references
-    window.stopAllVFX = window.stopAllVFX.filter(f => f !== cleanup);
-    window.stopAllVFX.push(cleanup);
-
-}, () => {
-    // Off-button just calls cleanup, does not null anything
-    if (window._bubbleCleanup) window._bubbleCleanup();
+    window.bubbleInt = setInterval(()=>{ transform(document.body); }, 50);
+},()=>{  // off function for Bubble Text
+  if(window.bubbleInt){clearInterval(window.bubbleInt); window.bubbleInt=null; window.bubbleActive=false;}
+  if(window.originalText){window.originalText.forEach(o=>o.el.nodeValue=o.text); window.originalText=[];}
 });
 
 
@@ -552,155 +538,93 @@ addBtn(vfx,'Page Spin',()=>{
   if(window.pageSpinStyle){window.pageSpinStyle.remove();window.pageSpinStyle=null;}
   window.pageSpinActive=false;
 });
-// Full chaos
-addBtn(vfx, 'Full Chaos', () => {
-  if (!window.fullChaosActive) {
-    window.fullChaosActive = true;
 
-    // Container just for chaos layers
-    let chaosContainer = document.createElement('div');
-    chaosContainer.id = 'chaosContainer';
-    chaosContainer.style.cssText = `
-      position:fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      pointer-events:none;
-      z-index:99998; /* keep below GUIs */
-    `;
-    document.body.appendChild(chaosContainer);
-
-    function randColor() {
-      return '#' + Math.floor(16777215 * Math.random()).toString(16);
-    }
-    function rand(n) {
-      return Math.floor(Math.random() * n) + 1;
-    }
-
-    // Build chaos bars
-    let h = window.innerHeight;
-    for (let i = 0; i < h; i++) {
-      let bar = document.createElement('div');
-      bar.id = 'chaosBar' + i;
-      bar.style.cssText = `
-        width:100%; height:1px;
-        background:${randColor()};
-      `;
-      chaosContainer.appendChild(bar);
-    }
-
-    // Loop effects
-    window.fullChaosLoop1 = setInterval(() => {
-      for (let e = 0; e < 10; e++) {
-        let bar = document.getElementById('chaosBar' + rand(h));
-        if (bar) {
-          bar.style.backgroundColor = randColor();
-          bar.style.height = rand(4) + 'px';
-        }
+// Full Chaos
+addBtn(vfx,'Full Chaos',()=>{
+  if(window.fullChaosActive) return;
+  window.fullChaosActive=true;
+  let d=document;
+  function c(){return '#'+Math.floor(16777215*Math.random()).toString(16)}
+  function r(e){return Math.floor(Math.random()*e)+1}
+  d.querySelectorAll('body *:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
+    e.style.margin='0'; e.style.padding='0'; e.style.overflow='hidden'; e.style.transformOrigin='50% 50%';
+  });
+  window.fullChaosLoop1=setInterval(()=>{
+    for(let i=0;i<10;i++){
+      let els=d.querySelectorAll('body *:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)');
+      if(els.length){
+        let el=els[r(els.length)-1];
+        el.style.backgroundColor=c();
+        el.style.height=r(4)+'px';
+        d.body.style.backgroundColor=c();
+        d.body.style.transform=r(256)>128?'scale(3) rotate('+r(35)+'deg)':'rotate(0deg) scale(1)';
+        window.scrollTo(0,d.body.scrollHeight);
       }
-      chaosContainer.style.backgroundColor = randColor();
-      chaosContainer.style.transform =
-        rand(256) > 128
-          ? `scale(3) rotate(${rand(35)}deg)`
-          : 'scale(1) rotate(0deg)';
-      window.scrollTo(0, document.body.scrollHeight);
-    }, 10);
-
-    window.fullChaosLoop2 = setInterval(() => {
-      window.scrollTo(0, 0);
-    }, 50);
-
-    // StopAll support
-    if (!window.stopAllVFX) window.stopAllVFX = [];
-    window.stopAllVFX.push(() => {
-      clearInterval(window.fullChaosLoop1);
-      clearInterval(window.fullChaosLoop2);
-      let c = document.getElementById('chaosContainer');
-      if (c) c.remove();
-      window.fullChaosActive = false;
-    });
-  } else {
-
-    clearInterval(window.fullChaosLoop1);
-    clearInterval(window.fullChaosLoop2);
-    let c = document.getElementById('chaosContainer');
-    if (c) c.remove();
-    window.fullChaosActive = false;
-  }
+    }
+  },10);
+  window.fullChaosLoop2=setInterval(()=>{window.scrollTo(0,0)},50);
+},()=>{
+  if(window.fullChaosLoop1){clearInterval(window.fullChaosLoop1); window.fullChaosLoop1=null;}
+  if(window.fullChaosLoop2){clearInterval(window.fullChaosLoop2); window.fullChaosLoop2=null;}
+  window.fullChaosActive=false;
+  document.body.style.transform='';
+  document.body.style.backgroundColor='';
+  document.querySelectorAll('body *:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
+    e.style.backgroundColor='';
+    e.style.height='';
+    e.style.transform='';
+  });
 });
-// stop all VFX
-addBtn(vfx, 'Stop All', () => {
 
-    // ------------------ Call all VFX cleanup functions ------------------
-    if (window.stopAllVFX) {
-        window.stopAllVFX.forEach(fn => { 
-            try { fn(); } catch(e) {} 
-        });
-        window.stopAllVFX = [];
-    }
+// Stop All
+addBtn(vfx,'Stop All',()=>{
+  // Page Spin
+  if(window.pageSpinStyle){window.pageSpinStyle.remove(); window.pageSpinStyle=null;}
+  window.pageSpinActive=false;
 
-    // ------------------ Stop Bubble Text ------------------
-    if (window._bubbleCleanup) {
-        try { window._bubbleCleanup(); } catch(e) {}
-        window._bubbleCleanup = null;
-    }
-    window.bubbleActive = false;
+  // Smooth Disco
+  if(window.discoSmoothInt){clearInterval(window.discoSmoothInt); window.discoSmoothInt=null; window.discoSmoothActive=false;}
 
-    // ------------------ Stop Matrix Rain ------------------
-    if(window.matrixInt){ clearInterval(window.matrixInt); window.matrixInt=null; }
-    if(window.matrixCanvas){ window.matrixCanvas.remove(); window.matrixCanvas=null; }
-    window.matrixActive=false;
+  // Glitch
+  if(window.glitchInt){clearInterval(window.glitchInt); window.glitchInt=null; window.glitchActive=false;}
 
-    // ------------------ Stop Smooth Disco ------------------
-    if(window.discoSmoothInt){ clearInterval(window.discoSmoothInt); window.discoSmoothInt=null; }
-    window.discoSmoothActive=false;
+  // Full Chaos
+  if(window.fullChaosLoop1){clearInterval(window.fullChaosLoop1); window.fullChaosLoop1=null;}
+  if(window.fullChaosLoop2){clearInterval(window.fullChaosLoop2); window.fullChaosLoop2=null;}
+  window.fullChaosActive=false;
 
-    // ------------------ Stop Glitch ------------------
-    if(window.glitchInt){ clearInterval(window.glitchInt); window.glitchInt=null; }
-    window.glitchActive=false;
+  // Image Glitch
+  if(window.imgGlitchInt){clearInterval(window.imgGlitchInt); window.imgGlitchInt=null;
+    document.querySelectorAll('img:not(#vfxGUI *):not(#utilitiesGUI *)').forEach(e=>{e.style.position=''; e.style.left=''; e.style.top='';});
+  }
 
-    // ------------------ Stop Full Chaos ------------------
-    if(window.fullChaosLoop1){ clearInterval(window.fullChaosLoop1); window.fullChaosLoop1=null; }
-    if(window.fullChaosLoop2){ clearInterval(window.fullChaosLoop2); window.fullChaosLoop2=null; }
-    const chaos = document.getElementById('chaosContainer');
-    if(chaos) chaos.remove();
-    window.fullChaosActive=false;
+  // Matrix Rain
+  if(window.matrixInt){clearInterval(window.matrixInt); window.matrixInt=null;}
+  if(window.matrixCanvas){window.matrixCanvas.remove(); window.matrixCanvas=null;}
+  window.matrixActive=false;
 
-    // ------------------ Stop Page Spin ------------------
-    if(window.pageSpinStyle){ window.pageSpinStyle.remove(); window.pageSpinStyle=null; }
-    window.pageSpinActive=false;
+  // Bubble Text
+  if(window.bubbleInt){clearInterval(window.bubbleInt); window.bubbleInt=null; window.bubbleActive=false;}
+  if(window.originalTextMap){window.originalTextMap.forEach((text, el)=>{ el.nodeValue=text; }); window.originalTextMap=null;}
 
-    // ------------------ Stop Text Corruption ------------------
-    if(window.textCorruptStyle){ window.textCorruptStyle.remove(); window.textCorruptStyle=null; }
+  // Text Corruption
+  if(window.textCorruptStyle){window.textCorruptStyle.remove(); window.textCorruptStyle=null;}
 
-    // ------------------ Stop Image Glitch ------------------
-    if(window.imgGlitchInt){ clearInterval(window.imgGlitchInt); window.imgGlitchInt=null; 
-        document.querySelectorAll('img:not(#vfxGUI *):not(#utilitiesGUI *)').forEach(e=>{
-            e.style.position=''; e.style.left=''; e.style.top='';
-        });
-    }
-
-    // ------------------ Reset page-wide inline styles ------------------
-    document.body.style.transform='';
-    document.body.style.backgroundColor='';
-    document.body.style.filter='';
-    document.querySelectorAll('body *:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
-        e.style.backgroundColor='';
-        e.style.height='';
-        e.style.transform='';
-        e.style.transition='';
-        e.style.color='';
-        e.style.fontSize='';
-        e.style.position='';
-        e.style.left='';
-        e.style.top='';
-        e.style.textShadow='';
-    });
-
-    // ------------------ Reset Utilities ------------------
-    if(window.stats){ window.stats.dom.remove(); window.stats=null; }
-    if(window.erudaInstance){ window.erudaInstance.destroy(); window.erudaInstance=null; window.erudaLoaded=false; }
-    if(window.portaFrame){ window.portaFrame.remove(); window.portaFrame=null; }
-
+  // Reset page
+  document.body.style.transform='';
+  document.body.style.backgroundColor='';
+  document.body.style.filter='';
+  document.querySelectorAll('body *:not(#vfxGUI):not(#vfxGUI *):not(#utilitiesGUI):not(#utilitiesGUI *)').forEach(e=>{
+    e.style.backgroundColor='';
+    e.style.height='';
+    e.style.transform='';
+    e.style.transition='';
+    e.style.color='';
+    e.style.fontSize='';
+    e.style.position='';
+    e.style.left='';
+    e.style.top='';
+  });
 });
 
     // -------------------- FONT COLOR SLIDER --------------------
