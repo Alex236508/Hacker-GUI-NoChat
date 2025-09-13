@@ -151,7 +151,6 @@ makeDraggable(vfx, vfxLock);
         container.appendChild(b);
         if(off) activeUtilities[name] = { on, off };
     }
-
     // Developer Console (Eruda)
     addBtn(util, 'Developer Console', () => {
     if (!window.erudaLoaded) {
