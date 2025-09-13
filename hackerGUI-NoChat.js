@@ -539,7 +539,6 @@ addBtn(vfx, 'Bubble Text', () => {
     if (window._bubbleCleanup) window._bubbleCleanup();
 });
 
-
 // Page Spin
 addBtn(vfx,'Page Spin',()=>{
   if(window.pageSpinActive) return;
@@ -592,9 +591,9 @@ addBtn(vfx, 'Full Chaos', () => {
       let bar = document.createElement('div');
       bar.id = 'chaosBar' + i;
       bar.style.cssText = `
-  width:100%; height:1px;
-  background:${randColor()};
-`;
+        width:100%; height:1px;
+        background:${randColor()};
+      `;
       chaosContainer.appendChild(bar);
     }
 
