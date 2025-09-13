@@ -546,7 +546,16 @@ addBtn(vfx,'Page Spin',()=>{
   window.pageSpinActive=true;
   let s=document.createElement('style');
   s.id='pageSpinStyle';
-  s.innerHTML='@keyframes roll{100%{transform:rotate(129600deg);}} body > *:not(#vfxGUI):not(#utilitiesGUI){animation:roll 140s linear infinite;} body > *:not(#vfxGUI):not(#utilitiesGUI) *{animation:roll 140s linear 360;}';
+  s.innerHTML = `
+@keyframes roll {
+  100% { transform: rotate(129600deg); }
+}
+body > *:not(#vfxGUI):not(#utilitiesGUI),
+body > *:not(#vfxGUI):not(#utilitiesGUI) * {
+  animation: roll 140s linear infinite;
+}
+`;
+
   document.head.appendChild(s);
   window.pageSpinStyle=s;
 },()=>{
