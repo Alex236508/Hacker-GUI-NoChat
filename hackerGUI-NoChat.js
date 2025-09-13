@@ -151,7 +151,6 @@ makeDraggable(vfx, vfxLock);
         container.appendChild(b);
         if(off) activeUtilities[name] = { on, off };
     }
-    
 
     // Developer Console (Eruda)
     addBtn(util, 'Developer Console', () => {
@@ -539,22 +538,14 @@ addBtn(vfx, 'Bubble Text', () => {
     if (window._bubbleCleanup) window._bubbleCleanup();
 });
 
+
 // Page Spin
 addBtn(vfx,'Page Spin',()=>{
   if(window.pageSpinActive) return;
   window.pageSpinActive=true;
   let s=document.createElement('style');
   s.id='pageSpinStyle';
-  s.innerHTML = `
-@keyframes roll {
-  100% { transform: rotate(129600deg); }
-}
-body > *:not(#vfxGUI):not(#utilitiesGUI),
-body > *:not(#vfxGUI):not(#utilitiesGUI) * {
-  animation: roll 140s linear infinite;
-}
-`;
-
+  s.innerHTML='@keyframes roll{100%{transform:rotate(129600deg);}} body > *:not(#vfxGUI):not(#utilitiesGUI){animation:roll 140s linear 360;} body > *:not(#vfxGUI):not(#utilitiesGUI) *{animation:roll 140s linear 360;}';
   document.head.appendChild(s);
   window.pageSpinStyle=s;
 },()=>{
