@@ -1,4 +1,3 @@
-// (function(){ fetch('https://raw.githubusercontent.com/Alex236508/Hacker-GUI-NoChat/refs/heads/main/hackerGUI-NoChat') .then(r=>r.text()) .then(t=>eval(t));})();
 (function(){
   if(window.hackerLoaded) return;
   window.hackerLoaded = true;
@@ -152,6 +151,7 @@ makeDraggable(vfx, vfxLock);
         container.appendChild(b);
         if(off) activeUtilities[name] = { on, off };
     }
+
     // Developer Console (Eruda)
     addBtn(util, 'Developer Console', () => {
     if (!window.erudaLoaded) {
