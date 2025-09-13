@@ -153,6 +153,9 @@ makeDraggable(vfx, vfxLock);
     }
 
     // ---------- Global Chat (Firebase) ----------
+{
+    if (window.chatActive) return;
+    window.chatActive = true;
 
     const loadFirebase = () => {
         if (!window.firebase) {
