@@ -678,7 +678,7 @@ setInterval(function () {
     }
     if (FindByAttributeValue("data-functional-selector", 'answer-0', "button") && info.lastAnsweredQuestion != info.questionNum) 
     {
-        info.lastAnsweredQuestion = info.questionNum
+        info.lastAnsweredQuestion = info.questionNun
         onQuestionStart()
     }
     if (autoAnswer){
